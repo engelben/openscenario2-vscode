@@ -1,0 +1,25 @@
+{
+    "name": "osc2",
+    "displayName": "osc2",
+    "description": "ASAM OpenSCENARIO 2 scenario description language",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.60.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "osc2",
+            "aliases": ["OpenSCENARIO2", "osc2"],
+            "extensions": ["osc2"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "osc2",
+            "scopeName": "source.osc2",
+            "path": "./syntaxes/osc2.tmLanguage.json"
+        }]
+    }
+}

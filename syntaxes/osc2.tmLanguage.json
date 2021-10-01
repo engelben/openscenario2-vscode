@@ -1,0 +1,221 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "OpenSCENARIO2",
+	"scopeName": "source.osc2",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#numbers"
+		},
+		{
+			"include": "#constants"
+		},
+		{
+			"include": "#strings"
+		}
+	],
+	"repository": {
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.flow.temporal.osc2",
+          "match": "\\b(serial|parallel|until|wait)\\b"
+        },
+        {
+          "name": "keyword.control.flow.osc2",
+          "match": "\\b(with)\\b"
+        },
+        {
+          "name": "keyword.control.import.osc2",
+          "match": "\\b(?:(import))\\b"
+        },
+        {
+          "name": "keyword.other.osc2",
+          "match": "\\b(any|cover|do|import|type|event|actor|scenario|emit|keep|label|sample|soft|default|struct|when|var)\\b"
+        },
+        {
+          "name": "keyword.operator.logical.osc2",
+          "match": "\\b(in|is|not|as)\\b"
+        },
+        {
+          "name": "keyword.operator.comparison.osc2",
+          "match": "==|!="
+        },
+        {
+          "name": "keyword.operator.relational.osc2",
+          "match": "<=|>=|>|<"
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.block.osc2",
+          "begin": "(\"{3,})$",
+          "end": "\"{3,}$"
+        },
+        {
+          "name": "comment.inline.osc2",
+          "match": "(#+).*$"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.osc2",
+          "begin": "\"",
+          "end": "\""
+        },
+        {
+          "name": "string.quoted.single.osc2",
+          "begin": "'",
+          "end": "'"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.osc2",
+          "match": "\b(true|false)\b"
+        }
+      ]
+    },
+    "numbers": {
+      "name": "constant.numeric.osc2",
+      "patterns": [
+        {
+          "include": "#number-int"
+        },
+        {
+          "include": "#number-float"
+        }
+      ]
+    },
+    "number-float": {
+      "match": "\\b([1-9]+[\\.][0-9]+)([\\w]+)?\\b",
+      "captures": {
+        "1": {
+          "name": "constant.numeric.float.osc2"
+        },
+        "2": {
+          "name": "constant.other.physicaltype.osc2"
+        }
+      }
+    },
+    "number-int": {
+      "match": "\\b([1-9]+[0-9]*)([\\w]+)?\\b",
+      "captures": {
+        "1": {
+          "name": "constant.numeric.integer.osc2"
+        },
+        "2": {
+          "name": "constant.other.physicaltype.osc2"
+        }
+      }
+    },
+    "function-call": {
+      "name": "meta.function-call.osc2",
+      "comment": "Regular function call of the type \"name(args)\"",
+      "begin": "(?x)\n  \\b(?=\n    ([[:alpha:]_]\\w*) \\s* (\\()\n  )\n",
+      "end": "(\\))",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.arguments.end.osc2"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#function-name"
+        },
+        {
+          "include": "#function-arguments"
+        }
+      ]
+    },
+    "function-name": {
+      "patterns": [
+        {
+          "include": "#builtin-callables"
+        },
+        {
+          "name": "meta.function-call.generic.osc2",
+          "match": "(?x)\n  \\b ([[:alpha:]_]\\w*) \\b\n"
+        }
+      ]
+    },
+    "function-arguments": {
+      "begin": "(\\()",
+      "end": "(?=\\))(?!\\)\\s*\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.arguments.begin.osc2"
+        }
+      },
+      "contentName": "meta.function-call.arguments.osc2",
+      "patterns": [
+        {
+          "name": "punctuation.separator.arguments.osc2",
+          "match": "(,)"
+        },
+        {
+          "match": "\\b([[:alpha:]_]\\w*)\\s*(=)(?!=)",
+          "captures": {
+            "1": {
+              "name": "variable.parameter.function-call.osc2"
+            },
+            "2": {
+              "name": "keyword.operator.assignment.osc2"
+            }
+          }
+        },
+        {
+          "name": "keyword.operator.assignment.osc2",
+          "match": "=(?!=)"
+        },
+        {
+          "include": "#expression"
+        },
+        {
+          "match": "\\s*(\\))\\s*(\\()",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.arguments.end.osc2"
+            },
+            "2": {
+              "name": "punctuation.definition.arguments.begin.osc2"
+            }
+          }
+        }
+      ]
+    },
+    "builtin-callables": {
+      "patterns": [
+        {
+          "include": "#builtin-functions"
+        },
+        {
+          "include": "#builtin-types"
+        }
+      ]
+    },
+    "builtin-functions": {
+      "patterns": [
+        {
+          "name": "support.function.builtin.osc2",
+          "match": "(?x)\n  (?<!\\.) \\b(\n    __import__ | abs | all | any | ascii | bin | breakpoint | callable\n    | chr | compile | copyright | credits | delattr | dir | divmod\n    | enumerate | eval | exec | exit | filter | format | getattr\n    | globals | hasattr | hash | help | hex | id | input\n    | isinstance | issubclass | iter | len | license | locals | map\n    | max | memoryview | min | next | oct | open | ord | pow | print\n    | quit | range | reload | repr | reversed | round\n    | setattr | sorted | sum | vars | zip\n  )\\b\n"
+        }
+      ]
+    },
+    "builtin-types": {
+      "name": "support.type.osc2",
+      "match": "(?x)\n  (?<!\\.) \\b(int|uint|float|string|weight|distance|time|current|temperature|substance|luminosity|angle|struct|list|bool)\\b\n"
+    }
+  }
+}
