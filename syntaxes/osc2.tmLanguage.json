@@ -110,15 +110,31 @@
       }
     },
     "number-int": {
-      "match": "\\b([1-9]+[0-9]*)([\\w]+)?\\b",
-      "captures": {
-        "1": {
-          "name": "constant.numeric.integer.osc2"
-        },
-        "2": {
-          "name": "constant.other.physicaltype.osc2"
+      "patterns":[
+      {
+        "match": "\\b(?<!\\.)([1-9]{1,}[0-9]+)(?!\\.)(\\w+)?\\b",
+        "captures": {
+          "1": {
+            "name": "constant.numeric.integer.osc2"
+          },
+          "2": {
+            "name": "constant.other.physicaltype.osc2"
+          }
+        }
+      },
+      {
+        "match": "\\b(?<!\\.)([1-9])(?!\\.)([a-zA-Z]+)?\\b",
+        "captures": {
+          "1": {
+            "name": "constant.numeric.integer.osc2"
+          },
+          "2": {
+            "name": "constant.other.physicaltype.osc2"
+          }
         }
       }
+    ]
+      
     },
     "function-call": {
       "name": "meta.function-call.osc2",

@@ -20,7 +20,9 @@ scenario elk_prepare_overtake:
     # trying to make calculation from above explicit
     keep (overtake_distance == ( (gvt_speed - ego_speed) * (ego_lane_offset - gvt_lane_offset) / ego_v_lat) - ego_rear_overhang ) 
     # overhang should be calculated or taken vehicle parameter (overhang / bb_center_to_rear / _front still needs to be added to entity definition!)
-
+10.11m
+123m
+123
     do parallel:​
         ego.change_speed(ego_speed)
         ego.follow_lane(ego_lane_offset) 
