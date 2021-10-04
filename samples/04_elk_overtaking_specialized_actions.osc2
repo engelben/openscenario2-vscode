@@ -1,0 +1,68 @@
+# ---- SCENARIO DEFINITION USING SPECIALIZED ACTIONS ----
+# Please note that this scenario was created using the specialized actions based on its generic action counterpart that can be found in the same folder.
+# The intent of this scenario definition is to provide a concrete and complete scenario.
+scenario elk_init_location:​
+# initialize route and rough location for completeness of overall scenario
+    ego, gvt: vehicle
+    r: route​
+    keep(r.min_lanes == 2)
+    do parallel:
+        ego.assign_pose(road_pose(r.lane1, s=150m, t=0m)) #road_pose not fixed yet #150m as best guess actually depends on power of vehicles etc.
+        gvt.assign_pose(road_pose(r.lane2, s=0m, t=0m)) 
+
+scenario elk_prepare_overtake:
+# initialize speeds and distance between vehicles to create starting situation for overtake
+    ego, gvt: vehicle
+    ego_lane_offset, gvt_lane_offset, overtake_distance, ego_v_lat, ego_speed, gvt_speed, ego_rear_overhang: float
+    keep (ego_speed == 72kph)
+    keep (gvt_speed == 80kph)
+    keep (ego_rear_overhang == 1m)
+    # trying to make calculation from above explicit
+    keep (overtake_distance == ( (gvt_speed - ego_speed) * (ego_lane_offset - gvt_lane_offset) / ego_v_lat) - ego_rear_overhang ) 
+    # overhang should be calculated or taken vehicle parameter (overhang / bb_center_to_rear / _front still needs to be added to entity definition!)
+
+    do parallel:​
+        ego.change_speed(ego_speed)
+        ego.follow_lane(ego_lane_offset) 
+        gvt.change_speed(gvt_speed)
+        gvt.follow_lane(gvt_lane_offset)
+        # can until be used here in parallel?
+        # does distance_along_route exist?
+        until(distance_along_route(gvt, ego) <= 10.11m)
+        # did not re-use the -1m from above as should come out of (here not specified!) vlat etc.
+        
+scenario elk_change_lane:
+# actual overtake
+    ego, gvt: vehicle
+    do parallel:
+        gvt.follow_lane(1.5m)
+        ego.change_lane(side="same_as", reference=gvt, dynamic_limits.max_lateral_vel=ego_v_lat) # ideally, this will never happen as ADAS function takes over --> scenario would actually fail --> will be fixed with override
+
+scenario elk_overtaking:
+# overall scenario combining inits and overtake
+# gvt specification taken from https://cdn.euroncap.com/media/39159/tb-025-global-vehicle-target-specification-for-euro-ncap-v10.pdf
+    ego, gvt: vehicle​
+    lane_width, d1, d2, ego_lane_offset, gvt_lane_offset, distance_gvt_to_center, ego_v_lat: float
+
+    keep (lane_width == 3.75m)
+    keep (ego.bounding_box.length == 4.2m)
+    keep (gvt.bounding_box.length == 4.023m)
+    keep (gvt.bounding_box.width == 1.712m)
+    keep (gvt.bounding_box.height == 1.427m)
+    keep (d1 == 0.25m)
+    keep (d2 == 0.75m)
+    keep (distance_gvt_to_center == 1.5m)
+    keep (gvt_lane_offset == -lane_width/2 + distance_gvt_to_center)
+    keep (ego_lane_offset == lane_width/2 - (d1 + d2 + ego.bounding_box.width) )
+    keep (ego_v_lat == 0.5mps)
+
+
+    do serial:
+        elk_init_location(ego, gvt, lane_width)
+        elk_prepare_overtake(ego, gvt, ego_lane_offset, gvt_lane_offset, ego_v_lat)
+        elk_change_lane(ego, gvt, gvt_lane_offset, ego_v_lat)
+
+
+
+
+
