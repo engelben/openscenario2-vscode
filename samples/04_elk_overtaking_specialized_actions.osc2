@@ -7,8 +7,11 @@ scenario elk_init_location:​
     r: route​
     keep(r.min_lanes == 2)
     do parallel:
+    ego.drive() with:
+        speed(223kph)
         ego.assign_pose(road_pose(r.lane1, s=150m, t=0m)) #road_pose not fixed yet #150m as best guess actually depends on power of vehicles etc.
         gvt.assign_pose(road_pose(r.lane2, s=0m, t=0m)) 
+import "extend"
 
 scenario elk_prepare_overtake:
 # initialize speeds and distance between vehicles to create starting situation for overtake

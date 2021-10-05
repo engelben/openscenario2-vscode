@@ -1,237 +1,431 @@
 {
-	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "OpenSCENARIO2",
 	"scopeName": "source.osc2",
 	"patterns": [
 		{
-			"include": "#keywords"
+			"include": "#statement"
 		},
 		{
-			"include": "#comments"
-		},
-		{
-			"include": "#numbers"
-		},
-		{
-			"include": "#constants"
-		},
-		{
-			"include": "#strings"
+			"include": "#expression"
 		}
 	],
 	"repository": {
-    "keywords": {
-      "patterns": [
-        {
-          "name": "keyword.control.flow.temporal.osc2",
-          "match": "\\b(serial|parallel|until|wait)\\b"
-        },
-        {
-          "name": "keyword.control.flow.osc2",
-          "match": "\\b(with)\\b"
-        },
+		"statement": {
+			"patterns": [
+				{
+					"include": "#import"
+				},
+				{
+					"include": "#statement-keyword"
+				},
+				{
+					"include": "#class-declaration"
+				},
+				{
+					"include": "#assignment-operator"
+				}
+			]
+		},
+		"import": {
+			"comment": "Import statements used to correctly mark `import`",
+			"patterns": [
         {
           "name": "keyword.control.import.osc2",
-          "match": "\\b(?:(import))\\b"
-        },
-        {
-          "name": "keyword.other.osc2",
-          "match": "\\b(any|cover|do|import|type|event|actor|scenario|emit|keep|label|sample|soft|default|struct|when|var)\\b"
-        },
-        {
-          "name": "keyword.operator.logical.osc2",
-          "match": "\\b(in|is|not|as)\\b"
-        },
-        {
-          "name": "keyword.operator.comparison.osc2",
-          "match": "==|!="
-        },
-        {
-          "name": "keyword.operator.relational.osc2",
-          "match": "<=|>=|>|<"
+          "match": "\\b(import)\\b"
         }
-      ]
-    },
-    "comments": {
-      "patterns": [
-        {
-          "name": "comment.block.osc2",
-          "begin": "(\"{3,})$",
-          "end": "\"{3,}$"
-        },
-        {
-          "name": "comment.inline.osc2",
-          "match": "(#+).*$"
-        }
-      ]
-    },
-    "strings": {
-      "patterns": [
-        {
-          "name": "string.quoted.double.osc2",
-          "begin": "\"",
-          "end": "\""
-        },
-        {
-          "name": "string.quoted.single.osc2",
-          "begin": "'",
-          "end": "'"
-        }
-      ]
-    },
-    "constants": {
-      "patterns": [
-        {
-          "name": "constant.language.osc2",
-          "match": "\b(true|false)\b"
-        }
-      ]
-    },
-    "numbers": {
-      "name": "constant.numeric.osc2",
-      "patterns": [
-        {
-          "include": "#number-int"
-        },
-        {
-          "include": "#number-float"
-        }
-      ]
-    },
-    "number-float": {
-      "match": "\\b([1-9]+[\\.][0-9]+)([\\w]+)?\\b",
-      "captures": {
-        "1": {
-          "name": "constant.numeric.float.osc2"
-        },
-        "2": {
-          "name": "constant.other.physicaltype.osc2"
-        }
-      }
-    },
-    "number-int": {
-      "patterns":[
+			]
+		},
+    "statement-keyword": {
+    "patterns": [
       {
-        "match": "\\b(?<!\\.)([1-9]{1,}[0-9]+)(?!\\.)(\\w+)?\\b",
-        "captures": {
-          "1": {
-            "name": "constant.numeric.integer.osc2"
-          },
-          "2": {
-            "name": "constant.other.physicaltype.osc2"
-          }
+            "name": "keyword.control.flow.temporal.osc2",
+            "match": "\\b(serial|parallel)\\b"
+        },
+        {
+            "name": "keyword.control.flow.osc2",
+            "match": "\\b(with|do)\\b"
+        },
+        {
+            "name": "keyword.other.osc2",
+            "match": "\\b(any|cover|type|event|actor|scenario|emit|label|sample|soft|default|struct|when|var)\\b"
+        },
+        {
+            "name": "storage.type.class.osc2",
+            "match": "\\b(type|event|actor|scenario|struct)\\b"
         }
-      },
-      {
-        "match": "\\b(?<!\\.)([1-9])(?!\\.)([a-zA-Z]+)?\\b",
-        "captures": {
-          "1": {
-            "name": "constant.numeric.integer.osc2"
-          },
-          "2": {
-            "name": "constant.other.physicaltype.osc2"
-          }
+        ]
+    },
+    "assignment-operator": {
+        "name": "keyword.operator.assignment.osc2",
+        "match": ":| = |@"
+    },
+    "expression": {
+        "comment": "All valid expressions",
+        "patterns": [
+            {
+                "include": "#expression-base"
+            },
+            {
+                "include": "#member-access"
+            },
+            {
+                "comment": "Tokenize identifiers to help linters",
+                "match": "\\b([a-zA-Z_]\\w*)\\b"
+            }
+        ]
+    },
+    "expression-base": {
+    "comment": "valid expressions with comments",
+    "patterns": [
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#expression-bare"
         }
-      }
     ]
-      
+  },
+  "comments": {
+      "patterns": [
+          {
+              "name": "comment.block.osc2",
+              "begin": "(\"{3,})$",
+              "end": "\"{3,}$"
+          },
+          {
+              "name": "comment.inline.osc2",
+              "match": "(#+).*$"
+          }
+      ]
+  },
+  "expression-bare": {
+    "comment": "valid expressions without comments",
+    "patterns": [
+        {
+            "include": "#string"
+        },
+        {
+            "include": "#literal"
+        },
+        {
+            "include": "#function-call"
+        },
+        {
+            "include": "#ellipsis"
+        },
+        {
+            "include": "#operator"
+        },
+        {
+            "include": "#curly-braces"
+        },
+        {
+            "include": "#round-braces"
+        },
+        {
+            "include": "#list"
+        },
+        {
+            "include": "#builtin-callables"
+        }
+    ]
     },
-    "function-call": {
+    "string": {
+      "patterns": [
+          {
+              "name": "string.quoted.double.osc2",
+              "begin": "\"",
+              "end": "\""
+          },
+          {
+              "name": "string.quoted.single.osc2",
+              "begin": "'",
+              "end": "'"
+          }
+      ]
+  },
+  "literal": {
+      "patterns": [
+          {
+              "name": "constant.language.osc2",
+              "match": "\b(true|false)\b"
+          },
+				{
+					"include": "#number"
+				}
+      ]
+  },
+  "number": {
+    "name": "constant.numeric.osc2",
+    "patterns": [
+        {
+            "include": "#number-int"
+        },
+        {
+            "include": "#number-float"
+        }
+    ]
+  },
+  "number-float": {
+      "match": "\\b([0-9]+[\\.][0-9]+)([\\w]+)?\\b",
+      "captures": {
+          "1": {
+              "name": "constant.numeric.float.osc2"
+          },
+          "2": {
+              "name": "constant.other.physicaltype.osc2"
+          }
+      }
+  },
+  "number-int": {
+      "patterns": [
+          {
+              "match": "\\b(?<!\\.)([1-9]{1,}[0-9]+)(?!\\.)(\\w+)?\\b",
+              "captures": {
+                  "1": {
+                      "name": "constant.numeric.integer.osc2"
+                  },
+                  "2": {
+                      "name": "constant.other.physicaltype.osc2"
+                  }
+              }
+          },
+          {
+              "match": "\\b(?<!\\.)([0-9])(?!\\.)([a-zA-Z]+)?\\b",
+              "captures": {
+                  "1": {
+                      "name": "constant.numeric.integer.osc2"
+                  },
+                  "2": {
+                      "name": "constant.other.physicaltype.osc2"
+                  }
+              }
+          }
+      ]
+  },
+  "builtin-callables": {
+      "patterns": [
+          {
+              "include": "#builtin-functions"
+          },
+          {
+              "include": "#builtin-types"
+          }
+      ]
+  },
+  "builtin-functions": {
+      "patterns": [
+          {
+              "name": "support.function.builtin.osc2",
+              "match": "(?<!\\.)\\b(keep|until)\\b"
+          }
+      ]
+  },
+  "builtin-types": {
+      "name": "support.type.osc2",
+      "match": "(?<!\\.)\\b(int|uint|float|string|weight|distance|time|current|temperature|substance|luminosity|angle|struct|list|bool)\\b"
+  },
+  "member-access": {
+    "name": "meta.member.access.osc2",
+    "begin": "(\\.)\\s*(?!\\.)",
+    "end": "(?<=\\S)(?=\\W)|(^|(?<=\\s))(?=[^\\\\\\w\\s])|$",
+    "beginCaptures": {
+        "1": {
+            "name": "punctuation.separator.period.osc2"
+        }
+    },
+    "patterns": [
+        {
+            "include": "#function-call"
+        },
+        {
+            "include": "#member-access-base"
+        },
+        {
+            "include": "#member-access-attribute"
+        }
+    ]
+  },
+  "function-call": {
       "name": "meta.function-call.osc2",
-      "comment": "Regular function call of the type \"name(args)\"",
-      "begin": "(?x)\n  \\b(?=\n    ([[:alpha:]_]\\w*) \\s* (\\()\n  )\n",
+      "comment": "Regular function call of the type name(args)",
+      "begin": "\\b(?=([a-zA-Z_]\\w*)(\\())",
       "end": "(\\))",
       "endCaptures": {
-        "1": {
-          "name": "punctuation.definition.arguments.end.osc2"
-        }
+          "1": {
+              "name": "punctuation.definition.arguments.end.osc2"
+          }
       },
       "patterns": [
-        {
-          "include": "#function-name"
-        },
-        {
-          "include": "#function-arguments"
-        }
+          {
+              "include": "#builtin-callables"
+          },
+          {
+              "include": "#function-name"
+          },
+          {
+              "include": "#function-arguments"
+          }
       ]
-    },
-    "function-name": {
+  },
+  "function-name": {
       "patterns": [
-        {
-          "include": "#builtin-callables"
-        },
-        {
-          "name": "meta.function-call.generic.osc2",
-          "match": "(?x)\n  \\b ([[:alpha:]_]\\w*) \\b\n"
-        }
+          {
+              "name": "meta.function-call.generic.osc2",
+              "match": "\\b([a-zA-Z_]\\w*)\\b"
+          }
       ]
-    },
-    "function-arguments": {
+  },
+  "function-arguments": {
       "begin": "(\\()",
       "end": "(?=\\))(?!\\)\\s*\\()",
       "beginCaptures": {
-        "1": {
-          "name": "punctuation.definition.arguments.begin.osc2"
-        }
+          "1": {
+              "name": "punctuation.definition.arguments.begin.osc2"
+          }
       },
       "contentName": "meta.function-call.arguments.osc2",
       "patterns": [
         {
-          "name": "punctuation.separator.arguments.osc2",
-          "match": "(,)"
+            "name": "punctuation.separator.arguments.osc2",
+            "match": "(\\,)"
         },
         {
-          "match": "\\b([[:alpha:]_]\\w*)\\s*(=)(?!=)",
-          "captures": {
-            "1": {
-              "name": "variable.parameter.function-call.osc2"
-            },
-            "2": {
-              "name": "keyword.operator.assignment.osc2"
+            "match": "\\b([a-zA-Z_]\\w*)\\s*(=)(?!=)",
+            "captures": {
+                "1": {
+                    "name": "variable.parameter.function-call.osc2"
+                }
             }
+				},
+        {
+          "include": "#assignment-operator"
+        },
+				{
+					"include": "#expression"
+        },
+        {
+					"match": "\\s*(\\))\\s*(\\()",
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.arguments.end.python"
+						},
+						"2": {
+							"name": "punctuation.definition.arguments.begin.python"
+						}
+					}
+				}
+      ]
+  },
+  "member-access-base": {
+      "patterns": [
+          {
+              "include": "#item-access"
+          }
+      ]
+  },
+  "item-access": {
+    "patterns": [
+      {
+        "name": "meta.item-access.osc2",
+        "begin": "\\b(?=[a-zA-Z_]\\w*\\s*\\[)",
+        "end": "(\\])",
+        "endCaptures": {
+          "1": {
+            "name": "punctuation.definition.arguments.end.osc2"
           }
         },
-        {
-          "name": "keyword.operator.assignment.osc2",
-          "match": "=(?!=)"
-        },
-        {
-          "include": "#expression"
-        },
-        {
-          "match": "\\s*(\\))\\s*(\\()",
-          "captures": {
-            "1": {
-              "name": "punctuation.definition.arguments.end.osc2"
-            },
-            "2": {
-              "name": "punctuation.definition.arguments.begin.osc2"
-            }
+        "patterns": [
+          {
+            "include": "#item-name"
+          },
+          {
+            "include": "#item-index"
+          },
+          {
+            "include": "#expression"
           }
-        }
-      ]
-    },
-    "builtin-callables": {
-      "patterns": [
-        {
-          "include": "#builtin-functions"
-        },
-        {
-          "include": "#builtin-types"
-        }
-      ]
-    },
-    "builtin-functions": {
-      "patterns": [
-        {
-          "name": "support.function.builtin.osc2",
-          "match": "(?x)\n  (?<!\\.) \\b(\n    __import__ | abs | all | any | ascii | bin | breakpoint | callable\n    | chr | compile | copyright | credits | delattr | dir | divmod\n    | enumerate | eval | exec | exit | filter | format | getattr\n    | globals | hasattr | hash | help | hex | id | input\n    | isinstance | issubclass | iter | len | license | locals | map\n    | max | memoryview | min | next | oct | open | ord | pow | print\n    | quit | range | reload | repr | reversed | round\n    | setattr | sorted | sum | vars | zip\n  )\\b\n"
-        }
-      ]
-    },
-    "builtin-types": {
-      "name": "support.type.osc2",
-      "match": "(?x)\n  (?<!\\.) \\b(int|uint|float|string|weight|distance|time|current|temperature|substance|luminosity|angle|struct|list|bool)\\b\n"
+        ]
+      }
+    ]
+  },
+  "item-name": {
+    "patterns": [
+      {
+        "include": "#special-variables"
+      },
+      {
+        "include": "#builtin-functions"
+      },
+      {
+        "include": "#special-names"
+      },
+      {
+        "name": "meta.indexed-name.osc2",
+        "match": "\\b([a-zA-Z_]\\w*)\\b"
+      }
+    ]
+  },
+  "special-variables": {
+    "match": "\\b(?<!\\.)(?:(it))\\b",
+    "captures": {
+      "1": {
+        "name": "variable.language.special.self.osc2"
+      }
     }
+  },
+  "special-names": {
+    "name": "constant.other.caps.osc2",
+    "match": "\\b(_*[A-Z][_\\d]*[A-Z])[A-Z\\d]*(_\\w*)?\\b"
+  },
+  "item-index": {
+    "begin": "(\\[)",
+    "end": "(?=\\])",
+    "beginCaptures": {
+      "1": {
+        "name": "punctuation.definition.arguments.begin.osc2"
+      }
+    },
+    "contentName": "meta.item-access.arguments.osc2",
+    "patterns": [
+      {
+        "name": "punctuation.separator.slice.osc2",
+        "match": ":"
+      },
+      {
+        "include": "#expression"
+      }
+    ]
+  },
+  "member-access-attribute": {
+      "comment": "Highlight attribute access in otherwise non-specialized cases.",
+      "name": "meta.attribute.osc2",
+      "match": "\\b([a-zA-Z_]\\w*)\\b"
+  },
+  "class-declaration": {
+			"patterns": [
+        {
+					"name": "meta.class.python",
+					"begin": "\\b(?<=: )(?=\\w*)",
+					"end": "$",
+					"patterns": [
+						{
+							"include": "#class-name"
+						}
+					]
+				}
+			]
+		},
+		"class-name": {
+			"patterns": [
+				{
+					"name": "entity.name.type.class.osc2",
+					"match": "\\b([a-zA-Z_]\\w*)"
+				},
+				{
+					"include": "#builtin-callables"
+				}
+			]
+		}
   }
 }
