@@ -407,7 +407,7 @@
         {
 					"name": "meta.class.python",
 					"begin": "\\b(?<=: )(?=\\w*)",
-					"end": "$",
+					"end": " ",
 					"patterns": [
 						{
 							"include": "#class-name"

@@ -1,8 +1,16 @@
 {
-    "name": "OpenSCENARIO2",
-    "displayName": "osc2",
-    "description": "ASAM OpenSCENARIO 2 scenario description language",
-    "version": "0.0.1",
+    "name": "asam-osc2",
+    "displayName": "ASAM OpenSCENARIO 2",
+    "description": "Syntax highlighting support for the ASAM OpenSCENARIO 2 scenario description language in Visual Studio Code",
+    "version": "0.1.1",
+	"author": "Benjamin Engel <benjamin.engel@asam.net>",
+	"publisher": "BenjaminEngel",
+	"license": "MIT",
+	"readme": "README.md",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/engelben/openscenario2-vscode"
+	},
     "engines": {
         "vscode": "^1.60.0"
     },
