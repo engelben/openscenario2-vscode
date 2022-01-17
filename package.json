@@ -1,8 +1,8 @@
 {
-    "name": "asam-osc2",
-    "displayName": "ASAM OpenSCENARIO 2",
-    "description": "Syntax highlighting support for the ASAM OpenSCENARIO 2 scenario description language in Visual Studio Code",
-    "version": "0.1.1",
+    "name": "asam-osc",
+    "displayName": "ASAM OpenSCENARIO",
+    "description": "Syntax highlighting support for the ASAM OpenSCENARIO scenario description language in Visual Studio Code",
+    "version": "0.2.0",
 	"author": "Benjamin Engel <benjamin.engel@asam.net>",
 	"publisher": "BenjaminEngel",
 	"license": "MIT",
@@ -19,15 +19,15 @@
     ],
     "contributes": {
         "languages": [{
-            "id": "osc2",
-            "aliases": ["OpenSCENARIO2", "osc2"],
-            "extensions": ["osc2"],
+            "id": "osc",
+            "aliases": ["OpenSCENARIO", "osc"],
+            "extensions": ["osc"],
             "configuration": "./language-configuration.json"
         }],
         "grammars": [{
-            "language": "osc2",
-            "scopeName": "source.osc2",
-            "path": "./syntaxes/osc2.tmLanguage.json"
+            "language": "osc",
+            "scopeName": "source.osc",
+            "path": "./syntaxes/osc.tmLanguage.json"
         }]
     }
 }
